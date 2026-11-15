@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Route Details - Matatu Stage System</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="routes">
+  <div class="layout">
+    <aside class="sidebar">
+      <img src="images/logo.png" alt="Web Based Matatu Stage Management System" class="logo">
+      <a href="index.html" class="link">Dashboard</a>
+      <a href="route.html" class="link active">Routes</a>
+      <div class="bottom"><a href="login.html" class="link">Staff login</a></div>
+    </aside>
+
+    <main class="main">
+      <p><a href="index.html">&larr; Back to dashboard</a></p>
+      <h1>Route 33 - CBD to Pipeline</h1>
+      <p class="sub">Estimated arrival at each stage (sample data)</p>
+
+      <section class="card">
+        <div class="tabs">
+          <a href="route.html" class="active">Stages</a>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Stage name</th><th>ETA</th><th>Status</th></tr></thead>
+            <tbody data-route="33">
+              <tr><td>1</td><td>CBD (Accra Road)</td><td>-</td><td><span class="badge arrived">Arrived</span></td></tr>
+              <tr><td>2</td><td>Makadara</td><td>8 min</td><td><span class="badge next">Next</span></td></tr>
+              <tr><td>3</td><td>Jogoo Road</td><td>13 min</td><td><span class="badge">Upcoming</span></td></tr>
+              <tr><td>4</td><td>Donholm Roundabout</td><td>20 min</td><td><span class="badge">Upcoming</span></td></tr>
+              <tr><td>5</td><td>Quarry</td><td>26 min</td><td><span class="badge">Upcoming</span></td></tr>
+              <tr><td>6</td><td>Tumaini</td><td>30 min</td><td><span class="badge">Upcoming</span></td></tr>
+              <tr><td>7</td><td>Tassia</td><td>35 min</td><td><span class="badge">Upcoming</span></td></tr>
+              <tr><td>8</td><td>Avenue Park</td><td>39 min</td><td><span class="badge">Upcoming</span></td></tr>
+              <tr><td>9</td><td>Fedha</td><td>43 min</td><td><span class="badge">Upcoming</span></td></tr>
+              <tr><td>10</td><td>Pipeline</td><td>48 min</td><td><span class="badge">Upcoming</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <h1>Route 111 - CBD to Ngong</h1>
+      <p class="sub">Estimated arrival at each stage (sample data)</p>
+
+      <section class="card">
+        <div class="tabs">
+          <a href="route.html" class="active">Stages</a>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Stage name</th><th>ETA</th><th>Status</th></tr></thead>
+            <tbody data-route="111">
+              <tr><td>1</td><td>CBD (Railways)</td><td>-</td><td><span class="badge arrived">Arrived</span></td></tr>
+              <tr><td>2</td><td>Kenyatta Hospital</td><td>8 min</td><td><span class="badge next">Next</span></td></tr>
+              <tr><td>3</td><td>Adams Arcade</td><td>15 min</td><td><span class="badge">Upcoming</span></td></tr>
+              <tr><td>4</td><td>Junction Mall</td><td>20 min</td><td><span class="badge">Upcoming</span></td></tr>
+              <tr><td>5</td><td>Dagoretti Corner</td><td>25 min</td><td><span class="badge">Upcoming</span></td></tr>
+              <tr><td>6</td><td>Lenana</td><td>31 min</td><td><span class="badge">Upcoming</span></td></tr>
+              <tr><td>7</td><td>Karen</td><td>41 min</td><td><span class="badge">Upcoming</span></td></tr>
+              <tr><td>8</td><td>Ngong Town</td><td>56 min</td><td><span class="badge">Upcoming</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="js/app.js"></script>
+</body>
+</html>

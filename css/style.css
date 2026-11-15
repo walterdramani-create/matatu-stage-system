@@ -1,0 +1,261 @@
+/* ===== Matatu Stage System - style.css (matches Chapter 4 wireframes) ===== */
+:root {
+  --navy: #1e2f4d;
+  --blue: #2563eb;
+  --blue-dark: #1d4fc4;
+  --blue-light: #e6efff;
+  --yellow: #f5af32;
+  --ink: #1f2937;
+  --muted: #6b7280;
+  --bg: #f3f6fb;
+  --white: #ffffff;
+  --line: #e1e7f0;
+  --green: #16a34a;
+  --green-light: #dcf5e4;
+  --red: #dc2626;
+  --red-light: #fde4e4;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+a { color: var(--blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+:focus-visible { outline: 3px solid var(--yellow); outline-offset: 2px; }
+
+h1 { font-size: 1.5rem; margin-bottom: 4px; }
+h2 { font-size: 1.05rem; margin-bottom: 12px; }
+p.sub { color: var(--muted); margin-bottom: 18px; }
+
+/* ----- Page layout: sidebar + main (used on every page) ----- */
+.layout { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 230px;
+  background: var(--white);
+  border-right: 1px solid var(--line);
+  padding: 14px 12px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar .logo { width: 100%; height: auto; border-radius: 8px; margin-bottom: 18px; display: block; }
+.sidebar a.link {
+  display: block;
+  padding: 10px 12px;
+  margin-bottom: 4px;
+  border-radius: 6px;
+  color: var(--ink);
+}
+.sidebar a.link:hover { background: var(--bg); text-decoration: none; }
+.sidebar a.link.active { background: var(--blue-light); color: var(--blue); font-weight: 600; }
+.sidebar .bottom { margin-top: auto; border-top: 1px solid var(--line); padding-top: 10px; }
+
+.main { flex: 1; padding: 24px; max-width: 1000px; }
+
+/* ----- Search bar (commuter dashboard) ----- */
+.searchbar { margin-bottom: 18px; }
+
+/* ----- Cards ----- */
+.card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 18px;
+  margin-bottom: 18px;
+}
+
+/* ----- Forms ----- */
+.form-group { margin-bottom: 14px; }
+label { display: block; font-weight: 600; margin-bottom: 4px; font-size: 0.9rem; }
+input, select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: var(--white);
+}
+.row { display: flex; gap: 12px; flex-wrap: wrap; }
+.row .form-group { flex: 1; min-width: 150px; }
+
+/* ----- Buttons ----- */
+.btn {
+  display: inline-block;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+}
+.btn:hover { text-decoration: none; }
+.btn-primary { background: var(--blue); color: var(--white); }
+.btn-primary:hover { background: var(--blue-dark); }
+.btn-yellow { background: var(--yellow); color: var(--navy); }
+.btn-yellow:hover { background: #e09a1c; }
+.btn-outline { background: var(--white); color: var(--blue); border: 1px solid var(--blue); }
+.btn-block { display: block; width: 100%; }
+.btn-big { padding: 16px; font-size: 1.1rem; }
+
+/* ----- ETA card (blue card from wireframe 2) ----- */
+.eta-card {
+  background: var(--blue);
+  color: var(--white);
+  border-radius: 10px;
+  padding: 20px 22px;
+  margin-bottom: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.eta-card small { color: #cfe0ff; display: block; }
+.eta-card .route-name { font-size: 1.15rem; font-weight: 600; }
+.eta-card .eta-box {
+  background: rgba(255,255,255,0.18);
+  border-radius: 8px;
+  padding: 8px 16px;
+  text-align: center;
+}
+.eta-card .eta-box small { color: var(--white); }
+.eta-card .eta-time { font-size: 1.8rem; font-weight: 700; line-height: 1.1; }
+
+/* ----- Stage list (timeline) ----- */
+.stage-list { list-style: none; border-left: 3px solid var(--line); margin-left: 8px; }
+.stage-list li {
+  position: relative;
+  padding: 10px 0 10px 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.stage-list li::before {
+  content: "";
+  position: absolute;
+  left: -10px; top: 50%;
+  width: 16px; height: 16px;
+  margin-top: -8px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 3px solid #9ca3af;
+}
+.stage-list li.arrived::before { border-color: var(--green); background: var(--green); }
+.stage-list li.next::before { border-color: var(--blue); background: var(--blue); }
+
+/* ----- Badges ----- */
+.badge {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: #eceff4;
+  color: var(--muted);
+}
+.badge.arrived, .badge.valid { background: var(--green-light); color: var(--green); }
+.badge.next { background: var(--blue); color: var(--white); }
+.badge.flagged { background: var(--red-light); color: var(--red); }
+
+/* ----- Tabs (route details) ----- */
+.tabs { display: flex; border-bottom: 1px solid var(--line); margin-bottom: 14px; }
+.tabs a { padding: 8px 20px; color: var(--muted); }
+.tabs a.active { color: var(--blue); border-bottom: 3px solid var(--blue); font-weight: 600; }
+
+/* ----- Tables ----- */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); }
+th { color: var(--muted); font-weight: 600; font-size: 0.85rem; }
+
+/* ----- Messages ----- */
+.message { padding: 10px 14px; border-radius: 6px; margin-bottom: 14px; font-size: 0.95rem; }
+.message.success { background: var(--green-light); color: var(--green); }
+.message.error { background: var(--red-light); color: var(--red); }
+
+/* ----- Login page ----- */
+.login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px; }
+.login-box { width: 100%; max-width: 380px; text-align: center; }
+.login-box .logo { width: 220px; max-width: 100%; border-radius: 8px; margin-bottom: 14px; }
+.login-box form { text-align: left; }
+.login-box .small { font-size: 0.9rem; margin-top: 14px; }
+
+/* ----- Stat boxes ----- */
+.stats { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 18px; }
+.stat { flex: 1; min-width: 150px; background: var(--white); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+.stat small { color: var(--muted); }
+.stat strong { display: block; font-size: 1.8rem; }
+
+/* ----- Upload box ----- */
+.upload-box {
+  border: 2px dashed #9db4dd;
+  border-radius: 10px;
+  padding: 34px 16px;
+  text-align: center;
+  background: #f8faff;
+  margin-bottom: 14px;
+}
+.upload-box p { color: var(--muted); margin-bottom: 12px; }
+
+.chart { width: 100%; height: auto; }
+
+/* ----- Profile ----- */
+.avatar {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: var(--white);
+  font-size: 1.6rem;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.profile-head { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+
+/* ----- Mobile ----- */
+@media (max-width: 760px) {
+  .layout { flex-direction: column; }
+  .sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 4px; padding: 10px; }
+  .sidebar .logo { width: 150px; margin: 0 10px 0 0; }
+  .sidebar a.link { margin: 0; padding: 8px 10px; }
+  .sidebar .bottom { margin: 0; border: none; padding: 0; }
+  .main { padding: 16px; }
+}
+
+/* ----- Added for JavaScript features ----- */
+.searchbar { position: relative; }
+.search-results {
+  list-style: none;
+  position: absolute; left: 0; right: 0; top: 100%;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin-top: 4px;
+  z-index: 5;
+  box-shadow: 0 6px 16px rgba(30, 47, 77, 0.12);
+}
+.search-results li { padding: 10px 14px; cursor: pointer; }
+.search-results li:hover, .search-results li:focus { background: var(--blue-light); outline: none; }
+.search-results li.none { color: var(--muted); cursor: default; }
+.search-results li.none:hover { background: transparent; }
+
+.demo-note {
+  background: #fff6dc;
+  border: 1px solid #f0d58a;
+  color: #6b5300;
+  padding: 8px 14px;
+  border-radius: 6px;
+  margin-bottom: 14px;
+  font-size: 0.88rem;
+}
+.link-button { background: none; border: none; color: var(--blue); cursor: pointer; font-size: inherit; text-decoration: underline; padding: 0; }
+.show-pass { font-weight: 400; font-size: 0.88rem; margin-top: 6px; }
+.show-pass input { width: auto; margin-right: 4px; }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.eta-card small + small { margin-top: 2px; }

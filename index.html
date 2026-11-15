@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard - Matatu Stage System</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="commuter">
+  <div class="layout">
+    <aside class="sidebar">
+      <img src="images/logo.png" alt="Web Based Matatu Stage Management System" class="logo">
+      <a href="index.html" class="link active">Dashboard</a>
+      <a href="route.html" class="link">Routes</a>
+      <div class="bottom"><a href="login.html" class="link">Staff login</a></div>
+    </aside>
+
+    <main class="main">
+      <h1>Dashboard</h1>
+      <p class="sub">Choose your route and stage to see when the next matatu arrives.</p>
+
+      <!-- FR-02: search -->
+      <div id="status-bar" class="message" style="display:none;"></div>
+
+      <div class="searchbar">
+        <input type="text" id="search" autocomplete="off" placeholder="Search route or stage..." aria-label="Search route or stage">
+      </div>
+
+      <!-- FR-01: choose route and stage -->
+      <section class="card">
+        <form action="#" method="get" id="eta-form">
+          <div class="row">
+            <div class="form-group">
+              <label for="route">Route</label>
+              <select id="route" name="route">
+                <option value="33">Route 33 - CBD to Pipeline</option>
+                <option value="111">Route 111 - CBD to Ngong</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="stage">Your stage</label>
+              <select id="stage" name="stage">
+                <option>CBD (Accra Road)</option>
+                <option>Makadara</option>
+                <option>Jogoo Road</option>
+                <option>Donholm Roundabout</option>
+                <option>Quarry</option>
+                <option>Tumaini</option>
+                <option>Tassia</option>
+                <option>Avenue Park</option>
+                <option>Fedha</option>
+                <option>Pipeline</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Show arrival time</button>
+        </form>
+      </section>
+
+      <!-- FR-04: dynamic ETA -->
+      <h2>Next matatu (your route)</h2>
+      <section class="eta-card">
+        <div>
+          <div class="route-name" id="eta-route">Route 33</div>
+          <small id="eta-sub"></small>
+          <small id="eta-note"></small>
+        </div>
+        <div class="eta-box">
+          <small>ETA</small>
+          <div class="eta-time" id="eta-time">--</div>
+        </div>
+      </section>
+
+      <!-- FR-05: live stages + queue -->
+      <section class="card">
+        <h2>Live stages</h2>
+        <ul class="stage-list" id="stage-list">
+          <li class="arrived"><span>CBD (Accra Road)</span> <span class="badge arrived">Arrived</span></li>
+          <li class="next"><span>Makadara</span> <span class="badge next">Next</span></li>
+          <li><span>Jogoo Road</span> <span class="badge">Upcoming</span></li>
+          <li><span>Donholm Roundabout</span> <span class="badge">Upcoming</span></li>
+          <li><span>Quarry</span> <span class="badge">Upcoming</span></li>
+          <li><span>Tumaini</span> <span class="badge">Upcoming</span></li>
+          <li><span>Tassia</span> <span class="badge">Upcoming</span></li>
+          <li><span>Avenue Park</span> <span class="badge">Upcoming</span></li>
+          <li><span>Fedha</span> <span class="badge">Upcoming</span></li>
+          <li><span>Pipeline (Destination)</span> <span class="badge">Upcoming</span></li>
+        </ul>
+        <p class="sub" id="queue-note" style="margin-top:12px;margin-bottom:0;"></p>
+      </section>
+
+      <!-- FR-03: report departure -->
+      <section class="card">
+        <h2>Just saw a matatu leave?</h2>
+        <p class="sub">Tap the button to tell others. No name or phone number needed.</p>
+        <div id="report-msg" class="message" style="display:none;"></div>
+        <button type="button" id="report-btn" class="btn btn-yellow btn-big btn-block">Report a departure from my stage</button>
+      </section>
+
+      <!-- FR-06: history -->
+      <section class="card">
+        <h2>Recent departures</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Stage</th><th>Time</th><th>Source</th></tr></thead>
+            <tbody id="history-body">
+              <tr><td>CBD (Accra Road)</td><td>08:14</td><td>Commuter</td></tr>
+              <tr><td>Quarry</td><td>08:09</td><td>Marshal</td></tr>
+              <tr><td>Donholm Roundabout</td><td>08:02</td><td>Commuter</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="js/app.js"></script>
+</body>
+</html>
