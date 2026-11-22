@@ -1,0 +1,8 @@
+# real passwords never go to GitHub
+config/db.php
+# first-admin script has default passwords: keep it on your laptop only
+create_admin.php
+# editor / system files
+.vscode/
+.DS_Store
+Thumbs.db

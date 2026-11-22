@@ -259,3 +259,34 @@ th { color: var(--muted); font-weight: 600; font-size: 0.85rem; }
 .show-pass input { width: auto; margin-right: 4px; }
 .btn:disabled { opacity: 0.6; cursor: not-allowed; }
 .eta-card small + small { margin-top: 2px; }
+
+/* ----- small fixes for phones ----- */
+.eta-card .eta-time { white-space: nowrap; }
+@media (max-width: 760px) {
+  .row .form-group { min-width: 100%; }
+}
+
+/* ----- welcome header (dashboard) and footer (every page) ----- */
+.main { display: flex; flex-direction: column; }
+.welcome-header {
+  background: var(--navy);
+  color: var(--white);
+  border-left: 6px solid var(--yellow);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+.welcome-header h2 { margin-bottom: 2px; font-size: 1.25rem; }
+.welcome-header p { color: #c9d4e8; font-size: 0.95rem; }
+
+.site-footer {
+  margin-top: auto;
+  padding: 18px 0 4px;
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+}
+.main > .site-footer { margin-top: 30px; }
+.login-wrap { flex-direction: column; }
+.login-wrap .site-footer { border-top: none; margin-top: 18px; }
