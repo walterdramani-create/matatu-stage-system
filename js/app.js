@@ -650,6 +650,305 @@ function startProfilePage() {
 }
 
 
+// ---------- 9b. MANAGE ROUTES PAGE (manage-routes.html) ----------
+function startManagePage() {
+  var msg = document.getElementById("manage-msg");
+  var picker = document.getElementById("route-picker");
+  var routeForm = document.getElementById("route-form");
+  var stageEditForm = document.getElementById("stage-edit-form");
+  var addForm = document.getElementById("add-stage-form");
+  var body = document.getElementById("stages-body");
+
+  var allRoutes = [];      // the routes (with their stages) from PHP
+  var currentId = null;    // id of the route chosen in the dropdown
+
+  // find the chosen route in the list
+  function currentRoute() {
+    for (var i = 0; i < allRoutes.length; i++) {
+      if (allRoutes[i].id == currentId) { return allRoutes[i]; }
+    }
+    return null;
+  }
+
+  // get everything from PHP, then show it. keepId = the route to select afterwards
+  function loadData(keepId) {
+    callApi("admin_routes.php", null, function (result) {
+      if (!result.ok) {
+        showMessage(msg, result.error, "error");
+        return;
+      }
+      allRoutes = result.routes;
+
+      picker.innerHTML = "";
+      for (var i = 0; i < allRoutes.length; i++) {
+        var op = document.createElement("option");
+        op.value = allRoutes[i].id;
+        op.textContent = allRoutes[i].name;
+        picker.appendChild(op);
+      }
+
+      if (keepId != null) { picker.value = keepId; }
+      currentId = picker.value;
+      showStages();
+    });
+  }
+
+  // draw the stages table and fill the "where does it go" dropdown
+  function showStages() {
+    var route = currentRoute();
+    body.innerHTML = "";
+    var after = document.getElementById("as-after");
+    after.innerHTML = "";
+
+    if (route == null) {
+      document.getElementById("stages-title").textContent = "Stages";
+      return;
+    }
+    document.getElementById("stages-title").textContent = "Stages on " + route.name;
+
+    if (route.stages.length == 0) {
+      var empty = document.createElement("tr");
+      var cell = document.createElement("td");
+      cell.colSpan = 5;
+      cell.textContent = "This route has no stages yet. Add the first one below.";
+      empty.appendChild(cell);
+      body.appendChild(empty);
+    }
+
+    var endOption = document.createElement("option");
+    endOption.value = "end";
+    endOption.textContent = "At the end of the route";
+    after.appendChild(endOption);
+
+    for (var i = 0; i < route.stages.length; i++) {
+      var s = route.stages[i];
+
+      // dropdown option
+      var op = document.createElement("option");
+      op.value = s.id;
+      op.textContent = "After " + s.name;
+      after.appendChild(op);
+
+      // table row
+      var row = document.createElement("tr");
+      var texts = [
+        s.sequence,
+        s.name,
+        (s.baseline == null) ? "-" : s.baseline,
+        (s.limit == null) ? "-" : s.limit
+      ];
+      for (var c = 0; c < texts.length; c++) {
+        var td = document.createElement("td");
+        td.textContent = texts[c];
+        row.appendChild(td);
+      }
+
+      var actions = document.createElement("td");
+      actions.className = "actions-cell";
+      actions.appendChild(makeButton("Up", "up", s.id, i == 0, ""));
+      actions.appendChild(makeButton("Down", "down", s.id, i == route.stages.length - 1, ""));
+      actions.appendChild(makeButton("Edit", "edit", s.id, false, ""));
+      var cantDelete = s.reports > 0;
+      var tip = cantDelete ? "This stage has reports, so it cannot be deleted." : "";
+      actions.appendChild(makeButton("Delete", "delete", s.id, cantDelete, tip));
+      row.appendChild(actions);
+      body.appendChild(row);
+    }
+  }
+
+  // one small button for the Actions column
+  function makeButton(text, action, id, disabled, tip) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = text;
+    btn.className = "btn btn-small " + (action == "delete" ? "btn-danger" : "btn-outline");
+    btn.disabled = disabled;
+    if (tip != "") { btn.title = tip; }
+    btn.setAttribute("data-action", action);
+    btn.setAttribute("data-id", id);
+    btn.addEventListener("click", rowButtonClicked);
+    return btn;
+  }
+
+  // find a stage of the chosen route by its id
+  function findStageById(id) {
+    var route = currentRoute();
+    for (var i = 0; i < route.stages.length; i++) {
+      if (route.stages[i].id == id) { return route.stages[i]; }
+    }
+    return null;
+  }
+
+  // Up / Down / Edit / Delete buttons
+  function rowButtonClicked(event) {
+    var action = event.target.getAttribute("data-action");
+    var id = event.target.getAttribute("data-id");
+    var stage = findStageById(id);
+    hideMessage(msg);
+
+    if (action == "up" || action == "down") {
+      callApi("stage_move.php", { stage_id: id, direction: action }, function (result) {
+        if (result.ok) {
+          showMessage(msg, "Order changed. Please check the travel times.", "success");
+          loadData(currentId);
+        } else {
+          showMessage(msg, result.error, "error");
+        }
+      });
+    }
+
+    if (action == "edit") {
+      var route = currentRoute();
+      var isLast = (stage.sequence == route.stages.length);
+      document.getElementById("se-id").value = stage.id;
+      document.getElementById("se-name").value = stage.name;
+      document.getElementById("se-baseline").value = (stage.baseline == null) ? "" : stage.baseline;
+      document.getElementById("se-limit").value = (stage.limit == null) ? "" : stage.limit;
+      document.getElementById("se-times").style.display = isLast ? "none" : "flex";   // the last stage has no next stage
+      stageEditForm.style.display = "block";
+      stageEditForm.scrollIntoView();
+    }
+
+    if (action == "delete") {
+      if (!confirm("Delete the stage " + stage.name + "?")) { return; }
+      callApi("stage_delete.php", { stage_id: id }, function (result) {
+        if (result.ok) {
+          showMessage(msg, "Stage deleted.", "success");
+          loadData(currentId);
+        } else {
+          showMessage(msg, result.error, "error");
+        }
+      });
+    }
+  }
+
+  // ----- route picker and route form -----
+  picker.addEventListener("change", function () {
+    currentId = picker.value;
+    stageEditForm.style.display = "none";
+    showStages();
+  });
+
+  function openRouteForm(route) {
+    document.getElementById("route-form-title").textContent = (route == null) ? "Add a new route" : "Edit this route";
+    document.getElementById("rf-id").value = (route == null) ? "" : route.id;
+    document.getElementById("rf-number").value = (route == null) ? "" : route.number;
+    document.getElementById("rf-name").value = (route == null) ? "" : route.name;
+    document.getElementById("rf-details").value = (route == null || route.details == null) ? "" : route.details;
+    routeForm.style.display = "block";
+    routeForm.scrollIntoView();
+  }
+
+  document.getElementById("new-route-btn").addEventListener("click", function () {
+    hideMessage(msg);
+    openRouteForm(null);
+  });
+
+  document.getElementById("edit-route-btn").addEventListener("click", function () {
+    hideMessage(msg);
+    if (currentRoute() != null) { openRouteForm(currentRoute()); }
+  });
+
+  document.getElementById("route-cancel").addEventListener("click", function () {
+    routeForm.style.display = "none";
+  });
+
+  routeForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    var data = {
+      route_id: document.getElementById("rf-id").value,
+      number: document.getElementById("rf-number").value.trim(),
+      name: document.getElementById("rf-name").value.trim(),
+      details: document.getElementById("rf-details").value.trim()
+    };
+    if (data.number == "" || data.name == "") {
+      showMessage(msg, "Please enter the route number and name.", "error");
+      return;
+    }
+    callApi("route_save.php", data, function (result) {
+      if (result.ok) {
+        showMessage(msg, "Route saved.", "success");
+        routeForm.style.display = "none";
+        loadData(result.route_id);
+      } else {
+        showMessage(msg, result.error, "error");
+      }
+    });
+  });
+
+  // ----- edit a stage -----
+  document.getElementById("stage-edit-cancel").addEventListener("click", function () {
+    stageEditForm.style.display = "none";
+  });
+
+  stageEditForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    var data = {
+      stage_id: document.getElementById("se-id").value,
+      name: document.getElementById("se-name").value.trim(),
+      baseline: document.getElementById("se-baseline").value,
+      limit: document.getElementById("se-limit").value
+    };
+    if (data.name == "") {
+      showMessage(msg, "Please enter a stage name.", "error");
+      return;
+    }
+    // the times only matter when the stage has a next stage (the boxes are hidden for the last one)
+    if (document.getElementById("se-times").style.display != "none") {
+      if (parseFloat(data.limit) < parseFloat(data.baseline)) {
+        showMessage(msg, "The longest time cannot be less than the normal time.", "error");
+        return;
+      }
+    }
+    callApi("stage_save.php", data, function (result) {
+      if (result.ok) {
+        showMessage(msg, "Stage saved.", "success");
+        stageEditForm.style.display = "none";
+        loadData(currentId);
+      } else {
+        showMessage(msg, result.error, "error");
+      }
+    });
+  });
+
+  // ----- add a stage -----
+  addForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    var data = {
+      route_id: currentId,
+      name: document.getElementById("as-name").value.trim(),
+      after: document.getElementById("as-after").value,
+      baseline: document.getElementById("as-baseline").value,
+      limit: document.getElementById("as-limit").value
+    };
+    if (data.route_id == null || data.route_id == "") {
+      showMessage(msg, "Choose or add a route first.", "error");
+      return;
+    }
+    if (data.name == "") {
+      showMessage(msg, "Please enter a stage name.", "error");
+      return;
+    }
+    if (parseFloat(data.limit) < parseFloat(data.baseline)) {
+      showMessage(msg, "The longest time cannot be less than the normal time.", "error");
+      return;
+    }
+    callApi("stage_save.php", data, function (result) {
+      if (result.ok) {
+        showMessage(msg, "Stage added.", "success");
+        addForm.reset();
+        loadData(currentId);
+      } else {
+        showMessage(msg, result.error, "error");
+      }
+    });
+  });
+
+  // start: admins only
+  requireLogin(["admin"], function () { loadData(null); });
+}
+
+
 // ---------- 10. START: run the code for the page we are on ----------
 var page = document.body.getAttribute("data-page");
 
@@ -659,3 +958,4 @@ if (page == "analytics") { startAnalyticsPage(); }
 if (page == "upload") { startUploadPage(); }
 if (page == "login") { startLoginPage(); }
 if (page == "profile") { startProfilePage(); }
+if (page == "manage") { startManagePage(); }

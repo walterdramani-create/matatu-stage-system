@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manage Routes - Admin</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="manage">
+  <div class="layout">
+    <aside class="sidebar">
+      <img src="images/logo.png" alt="Web Based Matatu Stage Management System" class="logo">
+      <a href="analytics.html" class="link">Reports</a>
+      <a href="admin-upload.html" class="link">Upload reports</a>
+      <a href="manage-routes.html" class="link active">Manage routes</a>
+      <a href="profile.html" class="link">Profile</a>
+      <div class="bottom"><a href="api/logout.php" class="link">Logout</a></div>
+    </aside>
+
+    <main class="main">
+      <h1>Manage routes</h1>
+      <p class="sub">Add routes and stages, and set the travel times the system uses to check reports.</p>
+
+      <div id="manage-msg" class="message" style="display:none;"></div>
+
+      <!-- choose a route (FR-10) -->
+      <section class="card">
+        <div class="form-group">
+          <label for="route-picker">Route</label>
+          <select id="route-picker"></select>
+        </div>
+        <button type="button" class="btn btn-outline" id="edit-route-btn">Edit this route</button>
+        <button type="button" class="btn btn-primary" id="new-route-btn">Add a new route</button>
+      </section>
+
+      <!-- add / edit route form (hidden until needed) -->
+      <form class="card" id="route-form" style="display:none;">
+        <h2 id="route-form-title">Add a new route</h2>
+        <input type="hidden" id="rf-id">
+        <div class="row">
+          <div class="form-group">
+            <label for="rf-number">Route number</label>
+            <input type="text" id="rf-number" maxlength="10" placeholder="e.g. 33">
+          </div>
+          <div class="form-group">
+            <label for="rf-name">Route name</label>
+            <input type="text" id="rf-name" maxlength="100" placeholder="e.g. Route 33 - CBD to Pipeline">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="rf-details">Details (optional)</label>
+          <input type="text" id="rf-details" maxlength="500">
+        </div>
+        <button type="submit" class="btn btn-primary">Save route</button>
+        <button type="button" class="btn btn-outline" id="route-cancel">Cancel</button>
+      </form>
+
+      <!-- the stages of the chosen route -->
+      <section class="card">
+        <h2 id="stages-title">Stages</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>#</th><th>Stage name</th><th>To next (min)</th><th>Longest (min)</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="stages-body"></tbody>
+          </table>
+        </div>
+        <p class="sub" style="margin-top:12px;margin-bottom:0;">
+          "To next" is the normal travel time to the following stage. "Longest" is the longest time the
+          system will believe. A report outside these times is flagged.
+        </p>
+      </section>
+
+      <!-- edit a stage (hidden until Edit is pressed) (FR-11) -->
+      <form class="card" id="stage-edit-form" style="display:none;">
+        <h2>Edit stage</h2>
+        <input type="hidden" id="se-id">
+        <div class="form-group">
+          <label for="se-name">Stage name</label>
+          <input type="text" id="se-name" maxlength="100">
+        </div>
+        <div class="row" id="se-times">
+          <div class="form-group">
+            <label for="se-baseline">Minutes to the next stage</label>
+            <input type="number" id="se-baseline" min="1" max="240" step="0.5">
+          </div>
+          <div class="form-group">
+            <label for="se-limit">Longest believable time (min)</label>
+            <input type="number" id="se-limit" min="1" max="480" step="0.5">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Save stage</button>
+        <button type="button" class="btn btn-outline" id="stage-edit-cancel">Cancel</button>
+      </form>
+
+      <!-- add a stage -->
+      <form class="card" id="add-stage-form">
+        <h2>Add a stage</h2>
+        <div class="form-group">
+          <label for="as-name">Stage name</label>
+          <input type="text" id="as-name" maxlength="100">
+        </div>
+        <div class="form-group">
+          <label for="as-after">Where does it go?</label>
+          <select id="as-after"></select>
+        </div>
+        <div class="row">
+          <div class="form-group">
+            <label for="as-baseline">Minutes from the stage before</label>
+            <input type="number" id="as-baseline" min="1" max="240" step="0.5">
+          </div>
+          <div class="form-group">
+            <label for="as-limit">Longest believable time (min)</label>
+            <input type="number" id="as-limit" min="1" max="480" step="0.5">
+          </div>
+        </div>
+        <p class="sub">The times are not needed for the first stage of a new route. You can change them later with Edit.</p>
+        <button type="submit" class="btn btn-primary">Add stage</button>
+      </form>
+
+      <footer class="site-footer">
+        <p>Created by Dramani Walter &middot; <a href="mailto:walter.dramani@strathmore.edu">walter.dramani@strathmore.edu</a></p>
+      </footer>
+    </main>
+  </div>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -290,3 +290,9 @@ th { color: var(--muted); font-weight: 600; font-size: 0.85rem; }
 .main > .site-footer { margin-top: 30px; }
 .login-wrap { flex-direction: column; }
 .login-wrap .site-footer { border-top: none; margin-top: 18px; }
+
+/* ----- manage routes page ----- */
+.btn-small { padding: 4px 10px; font-size: 0.85rem; margin-right: 4px; margin-bottom: 4px; }
+.btn-danger { background: var(--white); color: var(--red); border: 1px solid var(--red); }
+.btn-danger:hover { background: var(--red-light); }
+.actions-cell { white-space: nowrap; }

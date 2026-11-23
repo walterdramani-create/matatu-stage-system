@@ -280,3 +280,58 @@ function readRouteAndStage($pdo, $source) {
     }
     return [$route, (int)$index];
 }
+
+// ---- helpers for the admin "Manage routes" files ----
+
+// reads a piece of text from the form. Stops with an error if it is empty or too long.
+function readText($value, $label, $maxLength, $required = true) {
+    $text = trim((string)$value);
+    if ($required && $text === '') {
+        sendJson(['ok' => false, 'error' => "$label is required."], 400);
+    }
+    $length = function_exists('mb_strlen') ? mb_strlen($text) : strlen($text);   // works with or without mbstring
+    if ($length > $maxLength) {
+        sendJson(['ok' => false, 'error' => "$label is too long (maximum $maxLength characters)."], 400);
+    }
+    return $text;
+}
+
+// reads a number of minutes. Stops with an error if it is not a number from 1 to $max.
+function readMinutes($value, $label, $max) {
+    if (!is_numeric($value) || $value < 1 || $value > $max) {
+        sendJson(['ok' => false, 'error' => "$label must be a number from 1 to $max."], 400);
+    }
+    return round((float)$value, 2);
+}
+
+// all stages of a route in order: [stage_id, stage_name, stage_sequence]
+function stagesOfRoute($pdo, $routeId) {
+    $stmt = $pdo->prepare('SELECT stage_id, stage_name, stage_sequence FROM stage WHERE route_id = ? ORDER BY stage_sequence');
+    $stmt->execute([$routeId]);
+    return $stmt->fetchAll();
+}
+
+// true if another stage on this route already uses the name
+function stageNameTaken($pdo, $routeId, $name, $ignoreStageId) {
+    $stmt = $pdo->prepare('SELECT COUNT(*) FROM stage WHERE route_id = ? AND LOWER(stage_name) = LOWER(?) AND stage_id <> ?');
+    $stmt->execute([$routeId, $name, $ignoreStageId]);
+    return $stmt->fetchColumn() > 0;
+}
+
+// saves the travel time between two stages (replaces the old row if there is one)
+function setThreshold($pdo, $routeId, $fromId, $toId, $baseline, $limit) {
+    $stmt = $pdo->prepare('DELETE FROM travel_threshold WHERE from_stage_id = ? AND to_stage_id = ?');
+    $stmt->execute([$fromId, $toId]);
+    $stmt = $pdo->prepare('INSERT INTO travel_threshold (route_id, from_stage_id, to_stage_id, baseline_travel_time, threshold_limit)
+        VALUES (?, ?, ?, ?, ?)');
+    $stmt->execute([$routeId, $fromId, $toId, $baseline, $limit]);
+}
+
+// the saved travel time between two stages, or null
+function getThreshold($pdo, $fromId, $toId) {
+    $stmt = $pdo->prepare('SELECT baseline_travel_time AS baseline, threshold_limit AS lim FROM travel_threshold
+        WHERE from_stage_id = ? AND to_stage_id = ?');
+    $stmt->execute([$fromId, $toId]);
+    $row = $stmt->fetch();
+    return $row ? $row : null;
+}
